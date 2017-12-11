@@ -25,7 +25,7 @@ services:
         delay: 10s
       restart_policy:
         condition: on-failure
-       placement:
+      placement:
         constraints: [node.role == manager]
   cassnadra-two:
     image: cassandra:3.9
@@ -51,7 +51,7 @@ services:
         delay: 10s
       restart_policy:
         condition: on-failure
-       placement:
+      placement:
         constraints: [node.role == manager]
   cassnadra-three:
     image: cassandra:3.9
