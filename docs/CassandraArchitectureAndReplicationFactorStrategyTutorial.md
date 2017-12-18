@@ -75,7 +75,7 @@ docker exec it <CONTAINER_NAME> bash
 
 ```bash
 # create keyspace
-CREATE KEYSPACE ecommerce WITH replication = {'class':'SimpleStrategy', 'replication_factor':1};
+CREATE KEYSPACE ecommerce WITH replication = {'class':'SimpleStrategy', 'replication_factor':3};
 
 -- create table
 CREATE TABLE ecommerce.orders (
