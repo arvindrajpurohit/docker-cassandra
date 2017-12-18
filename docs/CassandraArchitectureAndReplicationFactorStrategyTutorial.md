@@ -8,15 +8,15 @@ All the nodes exchange information with each other using Gossip protocol. Gossip
 
 ![Components of Cassandra](./components.png)
 
-- Node, where data is stored
+- **Node**, where data is stored
 
-- Data Center, Collection of nodes
+- **Data Center**, Collection of nodes
 
-- Cluster, collection of datacenters
+- **Cluster**, collection of datacenters
 
-- Commit Log, write operation is written to Commit Log. Commit log is used for crash recovery.
+- **Commit Log**, write operation is written to Commit Log. Commit log is used for crash recovery.
 
-- Mem-table, data written in Commit log is written in Mem-table temporarily.
+- **Mem-table**, data written in Commit log is written in Mem-table temporarily.
 
 - SSTable, When Mem-table reaches a certain threshold, data is flushed to an SSTable disk file.
 
@@ -28,10 +28,14 @@ High level life cycle of the data from the time it is written from a cassandra c
 
 ![Lifecycle of Data](./cassandra_durability.png)
 
-**Step 1** Request is received by a random node in the cluster
+**Step 1** Request is received by a random node in the cluster.
+
 **Step 2** Node Writes data into the local commit log file in a sequential manner.
+
 **Step 3** Memtable gets updated in asynchronous mode.
+
 **Step 4** Memtable flushes the data to SSTables periodically, SStables is really the final persistance store for the data.
+
 **Step 5** Once data makes it way to SSTables the corresponding reference of the record in commit log and Memtable is flushed out.
 
 # nodetool
