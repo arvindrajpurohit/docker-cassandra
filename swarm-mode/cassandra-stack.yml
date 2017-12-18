@@ -1,0 +1,114 @@
+version: '3'
+services:
+    hcassandraone:
+        image: cassandra:3.9
+        command: bash -c 'if [ -z "$$(ls -A /var/lib/cassandra/)" ] ; then sleep 0; fi && /docker-entrypoint.sh cassandra -f'
+        networks:
+            - hdatacenterringone
+        volumes:
+            - hvolumecassandraone:/var/lib/cassandra
+        environment:
+            - CASSANDRA_CLUSTER_NAME=hcluster
+            - CASSANDRA_SEEDS=hcassandraone,hcassandratwo,hcassandrathree
+            - CASSANDRA_DC=hdatacenterone
+            - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+            - CASSANDRA_NUM_TOKENS=256
+        ports:
+            - "7000:7000"
+            - "7001:7001"
+            - "7199:7199"
+            - "9042:9042"
+            - "9160:9160"
+        ulimits:
+            memlock: -1
+            nproc: 32768
+            nofile: 100000
+        deploy:
+            mode: replicated
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+                delay: 30s
+                max_attempts: 3
+                window: 120s
+            placement:
+                constraints: [node.name == <NameMANAGER>]    
+    hcassandratwo:
+        image: cassandra:3.9
+        command: bash -c 'if [ -z "$$(ls -A /var/lib/cassandra/)" ] ; then sleep 60; fi && /docker-entrypoint.sh cassandra -f'
+        networks:
+            - hdatacenterringone
+        volumes:
+            - hvolumecassandratwo:/var/lib/cassandra
+        environment:
+            - CASSANDRA_CLUSTER_NAME=hcluster
+            - CASSANDRA_SEEDS=hcassandraone,hcassandratwo,hcassandrathree
+            - CASSANDRA_DC=hdatacenterone
+            - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+            - CASSANDRA_NUM_TOKENS=256
+        depends_on:
+            - hcassandraone
+        ulimits:
+            memlock: -1
+            nproc: 32768
+            nofile: 100000
+        deploy:
+            mode: replicated
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+                delay: 30s
+                max_attempts: 3
+                window: 120s
+            placement:
+                constraints: [node.name == <NameWorker1>]
+    hcassandrathree:
+        image: cassandra:3.9
+        command: bash -c 'if [ -z "$$(ls -A /var/lib/cassandra/)" ] ; then sleep 120; fi && /docker-entrypoint.sh cassandra -f'
+        networks:
+            - hdatacenterringone
+        volumes:
+            - hvolumecassandrathree:/var/lib/cassandra
+        environment:
+            - CASSANDRA_CLUSTER_NAME=hcluster
+            - CASSANDRA_SEEDS=hcassandraone,hcassandratwo,hcassandrathree
+            - CASSANDRA_DC=hdatacenterone
+            - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+            - CASSANDRA_NUM_TOKENS=256
+        depends_on:
+            - hcassandraone
+        ulimits:
+            memlock: -1
+            nproc: 32768
+            nofile: 100000
+        deploy:
+            mode: replicated
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+                delay: 30s
+                max_attempts: 3
+                window: 120s
+            placement:
+                constraints: [node.name == <NameWorker2>]
+networks:
+    hdatacenterringone:
+volumes:
+  hvolumecassandraone:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /root/db/hvolumeone/
+  hvolumecassandratwo:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /root/db/hvolumetwo/
+  hvolumecassandrathree:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /root/db/hvolumethree/

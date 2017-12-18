@@ -1,4 +1,3 @@
-# Please note we are using Docker Compose version 3
 version: '3'
 services:
     # Configuration for our seed cassandra node. The node is call DC1N1
