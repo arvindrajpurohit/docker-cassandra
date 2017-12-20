@@ -1,0 +1,33 @@
+version: '3'
+services:
+    wscassandra-one:
+        image: cassandra:3.9
+        volumes:
+            - cassandra-volume:/var/lib/cassandra/
+        ports:
+            - 7000:7000
+            - 7001:7001
+            - 7199:7199
+            - 9042:9042
+            - 9160:9160
+        environment:
+            - CASSANDRA_CLUSTER_NAME='sample-cluster'
+            - CASSANDRA_NUM_TOKENS=256
+            - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+            - CASSANDRA_DC=sample-datacenter-one
+            - CASSANDRA_RPC_ADDRESS=0.0.0.0
+            # - CASSANDRA_LISTEN_ADDRESS=1.2.3.4
+            # # Controls which IP address to listen for incoming connections on. The default value is auto, which will set the listen_address option in cassandra.yaml to the IP address of the container as it starts
+            # - CASSANDRA_BROADCAST_ADDRES=1.2.3.6
+            # # Controls which IP address to advertise to other nodes. The default value is the value of CASSANDRA_LISTEN_ADDRESS
+            # - CASSANDRA_RPC_ADDRESS=0.0.0.0
+            # # Controls which address to bind the thrift rpc server to. If you do not specify an address, the wildcard address (0.0.0.0) will be used
+        restart: always
+volumes:
+  cassandra-volume:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /root/db/cassandra-volume/
+    
